@@ -1,0 +1,10 @@
+#!/bin/bash
+#script for resetting firewall rules
+#Flush all chains in the filter table
+iptables -F
+#Flush all chains for NAT Table
+iptables -t nat -F
+#change the default policy to ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT

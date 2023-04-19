@@ -1,0 +1,233 @@
+  ##############################################################################
+ #                                                                            ##
+############################################################################## #
+#                                                                            # #
+#                     Policy file for Leopold.oz6bl.dk                       # #
+#                                V1.0.2                                      # #
+#                          November 29, 2011                                 # #
+#                                                                            ##
+##############################################################################
+
+
+  ##############################################################################
+ #                                                                            ##
+############################################################################## #
+#                                                                            # #
+# Email support is not included and must be added to this file.              # #
+# Add the 'emailto=' to the rule directive section of each rule (add a comma # #
+# after the 'severity=' line and add an 'emailto=' and include the email     # #
+# addresses you want the violation reports to go to).  Addresses are         # #
+# semi-colon delimited.                                                      # #
+#                                                                            ##
+##############################################################################
+
+
+
+  ##############################################################################
+ #                                                                            ##
+############################################################################## #
+#                                                                            # #
+# Global Variable Definitions                                                # #
+#                                                                            # #
+# These are defined at install time by the installation script.  You may     # #
+# manually edit these if you are using this file directly and not from the   # #
+# installation script itself.                                                # #
+#                                                                            ##
+##############################################################################
+
+@@section GLOBAL
+TWDOCS="/usr/doc/tripwire";
+TWBIN="/usr/sbin";
+TWPOL="/etc/tripwire";
+TWDB="/var/lib/tripwire";
+TWSKEY="/etc/tripwire";
+TWLKEY="/etc/tripwire";
+TWREPORT="/var/lib/tripwire/report";
+HOSTNAME=leopold;
+
+@@section FS
+SEC_CRIT      = $(IgnoreNone)-SHa ;  # Critical files that cannot change
+SEC_SUID      = $(IgnoreNone)-SHa ;  # Binaries with the SUID or SGID flags set
+SEC_BIN       = $(ReadOnly) ;        # Binaries that should not change
+SEC_CONFIG    = $(Dynamic) ;         # Config files that are changed infrequently but accessed often
+SEC_LOG       = $(Growing) ;         # Files that grow, but that should never change ownership
+SEC_INVARIANT = +tpug ;              # Directories that should never change permission or ownership
+SIG_LOW       = 33 ;                 # Non-critical files that are of minimal security impact
+SIG_MED       = 66 ;                 # Non-critical files that are of significant security impact
+SIG_HI        = 100 ;                # Critical files that are significant points of vulnerability
+
+# Boot Files
+(
+  rulename = "Boot Files",
+  severity = $(SIG_HI)
+)
+{
+  /boot                                -> $(SEC_BIN) ;
+}
+
+
+# System Binaries
+(
+  rulename = "System Binaries",
+  severity = $(SIG_HI)
+)
+{
+  /sbin                                -> $(SEC_BIN) ;
+  /usr/sbin                            -> $(SEC_BIN) ;
+  /usr/local/sbin                      -> $(SEC_BIN) ;
+}
+
+# User Binaries
+(
+  rulename = "User Binaries",
+  severity = $(SIG_HI)
+)
+{
+  /bin                                 -> $(SEC_BIN) ;
+  /opt                                 -> $(SEC_BIN) ;
+  /usr/bin                             -> $(SEC_BIN) ;
+  /usr/local/bin                       -> $(SEC_BIN) ;
+}
+
+
+
+# Include Files
+(
+  rulename = "Include Files",
+  severity = $(SIG_HI)
+)
+{
+
+  /usr/include                         -> $(SEC_CONFIG) ;
+}
+
+# Configuration Files
+(
+  rulename = "Configuration Files",
+  severity = $(SIG_HI)
+)
+{
+
+  /etc                                 -> $(SEC_CONFIG) ;
+  /var                                 -> $(SEC_CONFIG) ;
+  /var/cache/man                       -> $(SEC_CONFIG) -i ;
+  !/var/cache/edb ;                                 # Heavily used by portage	
+  !/var/db/pkg ;                                    # Heavily used by portage	
+  /var/lib                             -> $(SEC_CONFIG) -i ;
+  !/var/vmail ;                                     # Mail to virtual accounts is stored here
+  !/var/spool/postfix/maildrop ;                    # All mail goes through here
+  !/var/spool/asterisk/voicemail ;                  # All voicemail goes through here
+  !/var/lib/tripwire/report ;                       # A new report is added every time a check is run
+  /var/spool/cron/lastrun              -> $(SEC_CONFIG) -i ;
+  !/var/spool/cron/lastrun/cron.hourly ;            # Comes and goes...
+}
+
+# Log Files
+(
+  rulename = "Log Files",
+  severity = $(SIG_HI)
+)
+{
+
+  /var/log                             -> $(SEC_LOG) ;
+}
+
+# Server Files
+(
+  rulename = "Server Files",
+  severity = $(SIG_HI)
+)
+{
+
+  !/var/www     ; # Now NFS mounted 
+}
+
+
+# Commonly accessed directories that should remain static with regards to owner and group
+(
+  rulename = "Invariant Directories",
+  severity = $(SIG_MED)
+)
+{
+  /                                    -> $(SEC_INVARIANT) (recurse = 0) ;
+  /home                                -> $(SEC_INVARIANT) (recurse = 1) ;
+}
+
+
+# Temporary directories
+(
+  rulename = "Temporary directories",
+  recurse = false,
+  severity = $(SIG_LOW)
+)
+{
+  /usr/tmp                             -> $(SEC_INVARIANT) ;
+  /var/tmp                             -> $(SEC_INVARIANT) ;
+  /tmp                                 -> $(SEC_INVARIANT) ;
+}
+
+# Libraries
+(
+  rulename = "Libraries",
+  severity = $(SIG_HI)
+)
+{
+  /lib                                 -> $(SEC_BIN) ;
+  !/lib/rc/init.d			; # on a 'tmpfs' file system
+  /usr/lib                             -> $(SEC_BIN) ;
+  /usr/local/lib                       -> $(SEC_BIN) ;
+}
+
+
+# Files belonging to the root account
+(
+  rulename = "Root's files",
+  severity = $(SIG_HI)
+)
+{
+     /root                             -> $(SEC_CRIT) ;
+     /root/.bash_history               -> $(SEC_CONFIG) ;
+    # /root/.Xauthority                 -> $(SEC_CONFIG) -i ; # Changes Inode number on login
+    !/root/.config/mc                  ; # changes every time 'mc' is used
+    !/root/.cache                      ; 
+    !/root/.local                      ; 
+}
+
+#
+# Modified by Bhupjit Singh, April 2020
+#
+#
+# Original copyright note:
+#
+#=============================================================================
+#
+# Copyright 2000 Tripwire, Inc. Tripwire is a registered trademark of Tripwire,
+# Inc. in the United States and other countries. All rights reserved.
+#
+# Linux is a registered trademark of Linus Torvalds.
+#
+# UNIX is a registered trademark of The Open Group.
+#
+#=============================================================================
+#
+# Permission is granted to make and distribute verbatim copies of this document
+# provided the copyright notice and this permission notice are preserved on all
+# copies.
+#
+# Permission is granted to copy and distribute modified versions of this
+# document under the conditions for verbatim copying, provided that the entire
+# resulting derived work is distributed under the terms of a permission notice
+# identical to this one.
+#
+# Permission is granted to copy and distribute translations of this document
+# into another language, under the above conditions for modified versions,
+# except that this permission notice may be stated in a translation approved by
+# Tripwire, Inc.
+#
+# DCM
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+INET_IF=eth0
+INET_IF=eth1
+IPTABLES=/usr/sbin/iptables
+NETWORK=192.168.154.0/24
+
+# Clear the iptables
+$IPTABLES -F
+$IPTABLES -t nat -F
+$IPTABLES -X 
+
+# Block everything by default
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
+$IPTABLES -P OUTPUT DROP
+
+# Allow ssh
+$IPTABLES -A INPUT -p tcp --dport 42069 -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --sport 42069 -j ACCEPT
+
+# Allow DNS
+$IPTABLES -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
+$IPTABLES -A INPUT -p udp -m udp --sport 53 -j ACCEPT
+
+# Allow webtraffic
+$IPTABLES -A INPUT -p tcp --sport 80 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --sport 443 -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 80 -j ACCEPT
+$IPTABLES -A OUTPUT -p tcp --dport 443 -j ACCEPT
+
+# Forwarding between interfaces
+$IPTABLES -A FORWARD -i $INET_IN -o $INET_IF -j ACCEPT
+$IPTABLES -A FORWARD -i $INET_IF -o $INET_IN -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Masquerade outgoing traffic from private VLAN
+$IPTABLES -t nat -A POSTROUTING -o $INET_IF -j MASQUERADE
+
+# Block everything else
+$IPTABLES -A INPUT -j DROP
+$IPTABLES -A OUTPUT -j DROP
+$IPTABLES -A FORWARD -j DROP
