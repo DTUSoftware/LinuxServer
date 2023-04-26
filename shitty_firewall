@@ -1,19 +1,27 @@
 #!/bin/bash
 #
 INET_IF=eth0
-INET_IF=eth1
+LAN_IF=eth1
+SQUID_IP=192.168.150.14
+SQUID_PORT_HTTP=3129
+SQUID_PORT_HTTPS=3130
 IPTABLES=/usr/sbin/iptables
 NETWORK=192.168.154.0/24
 
 # Clear the iptables
 $IPTABLES -F
 $IPTABLES -t nat -F
-$IPTABLES -X 
+$IPTABLES -X
 
 # Block everything by default
 $IPTABLES -P INPUT DROP
 $IPTABLES -P FORWARD DROP
 $IPTABLES -P OUTPUT DROP
+
+# Add LOG_REJECT chain
+$IPTABLES -N LOG_REJECT
+$IPTABLES -A LOG_REJECT -j LOG
+$IPTABLES -A LOG_REJECT -j REJECT
 
 # Allow ssh
 $IPTABLES -A INPUT -p tcp --dport 42069 -j ACCEPT
@@ -23,6 +31,9 @@ $IPTABLES -A OUTPUT -p tcp --sport 42069 -j ACCEPT
 $IPTABLES -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 $IPTABLES -A INPUT -p udp -m udp --sport 53 -j ACCEPT
 
+# Disallow Facebook (also done in Squid) - log and reject
+$IPTABLES -A OUTPUT -p tcp -m string --string "facebook." --algo kmp -j LOG_REJECT
+
 # Allow webtraffic
 $IPTABLES -A INPUT -p tcp --sport 80 -j ACCEPT
 $IPTABLES -A INPUT -p tcp --sport 443 -j ACCEPT
@@ -30,8 +41,18 @@ $IPTABLES -A OUTPUT -p tcp --dport 80 -j ACCEPT
 $IPTABLES -A OUTPUT -p tcp --dport 443 -j ACCEPT
 
 # Forwarding between interfaces
-$IPTABLES -A FORWARD -i $INET_IN -o $INET_IF -j ACCEPT
-$IPTABLES -A FORWARD -i $INET_IF -o $INET_IN -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN_IF -o $INET_IF -j ACCEPT
+$IPTABLES -A FORWARD -i $INET_IF -o $LAN_IF -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Redirect HTTP and HTTPS traffic to Squid proxy
+$IPTABLES -t nat -A OUTPUT --match owner --uid-owner squid -p tcp --dport 80 -j ACCEPT
+$IPTABLES -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination $SQUID_IP:$SQUID_PORT_HTTP
+
+#$IPTABLES -t nat -A PREROUTING -i $LAN_IF -p tcp --dport 80 -j DNAT --to $SQUID_IP:$SQUID_PORT_HTTP
+#$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 80 -j REDIRECT --to-port $SQUID_PORT_HTTP
+
+#$IPTABLES -t nat -A PREROUTING -i $LAN_IF -p tcp --dport 443 -j DNAT --to $SQUID_IP:$SQUID_PORT_HTTPS
+#$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 443 -j REDIRECT --to-port $SQUID_PORT_HTTPS
 
 # Masquerade outgoing traffic from private VLAN
 $IPTABLES -t nat -A POSTROUTING -o $INET_IF -j MASQUERADE

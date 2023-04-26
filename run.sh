@@ -59,6 +59,8 @@ systemctl enable dhcpd.service
 
 ## Logwatch
 mkdir /var/cache/logwatch
+echo "MailTo = mwasa@dtu.dk, s215771@student.dtu.dk" >> /etc/logwatch/conf/logwatch.conf
+
 #logwatch --detail Low --range today
 
 ## Squid
@@ -79,3 +81,5 @@ cd ../
 cp twpol.txt /etc/tripwire/twpol.txt 
 /usr/local/sbin/twadmin --create-polfile /etc/tripwire/twpol.txt
 /usr/local/sbin/tripwire --init
+
+reboot
