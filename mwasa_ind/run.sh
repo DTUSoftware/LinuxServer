@@ -24,7 +24,6 @@ then
     chmod -v 700 ~/.ssh
     chmod -v 600 ~/.ssh/authorized_keys
 
-
     ## Hostname
     hostname mwasa-t2g2
     hostnamectl set-hostname mwasa-t2g2
@@ -38,6 +37,9 @@ then
     systemctl start sshd
     systemctl enable sshd
     systemctl restart sshd
+
+    # Enable proxy
+    echo -e "http_proxy=http://192.168.154.1:3128\nhttps_proxy=https://192.168.154.1:3128" >> /etc/environment
 
     ## Do dist upgrade :)
     do-release-upgrade

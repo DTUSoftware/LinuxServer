@@ -55,7 +55,8 @@ then
     systemctl enable dhcpd.service
 
     ## Squid
-    docker-compose -f ./containers/squid/docker-compose.yml up -d
+#    docker-compose -f ./containers/squid/docker-compose.yml up -d
+    sh ./containers/squid/run.sh
 
     # Enable firewall rules
     /root/bin/shitty_firewall
