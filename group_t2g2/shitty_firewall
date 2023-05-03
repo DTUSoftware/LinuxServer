@@ -3,7 +3,7 @@
 INET_IF=eth0
 LAN_IF=eth1
 SQUID_IP=192.168.150.14
-SQUID_PORT_HTTP=3129
+SQUID_PORT_HTTP=3128
 SQUID_PORT_HTTPS=3130
 IPTABLES=/usr/sbin/iptables
 NETWORK=192.168.154.0/24
@@ -45,14 +45,14 @@ $IPTABLES -A FORWARD -i $LAN_IF -o $INET_IF -j ACCEPT
 $IPTABLES -A FORWARD -i $INET_IF -o $LAN_IF -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # Redirect HTTP and HTTPS traffic to Squid proxy
-$IPTABLES -t nat -A OUTPUT --match owner --uid-owner squid -p tcp --dport 80 -j ACCEPT
-$IPTABLES -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination $SQUID_IP:$SQUID_PORT_HTTP
+#$IPTABLES -t nat -A OUTPUT --match owner --uid-owner squid -p tcp --dport 80 -j ACCEPT
+#$IPTABLES -t nat -A OUTPUT -p tcp --dport 80 -j DNAT --to-destination $SQUID_IP:$SQUID_PORT_HTTP
 
 #$IPTABLES -t nat -A PREROUTING -i $LAN_IF -p tcp --dport 80 -j DNAT --to $SQUID_IP:$SQUID_PORT_HTTP
-#$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 80 -j REDIRECT --to-port $SQUID_PORT_HTTP
+$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 80 -j REDIRECT --to-port $SQUID_PORT_HTTP
 
 #$IPTABLES -t nat -A PREROUTING -i $LAN_IF -p tcp --dport 443 -j DNAT --to $SQUID_IP:$SQUID_PORT_HTTPS
-#$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 443 -j REDIRECT --to-port $SQUID_PORT_HTTPS
+$IPTABLES -t nat -A PREROUTING -i $INET_IF -p tcp --dport 443 -j REDIRECT --to-port $SQUID_PORT_HTTP
 
 # Masquerade outgoing traffic from private VLAN
 $IPTABLES -t nat -A POSTROUTING -o $INET_IF -j MASQUERADE
