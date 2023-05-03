@@ -61,3 +61,6 @@ $IPTABLES -t nat -A POSTROUTING -o $INET_IF -j MASQUERADE
 $IPTABLES -A INPUT -j DROP
 $IPTABLES -A OUTPUT -j DROP
 $IPTABLES -A FORWARD -j DROP
+
+## Restart docker
+service docker restart

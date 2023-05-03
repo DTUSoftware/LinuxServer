@@ -16,7 +16,7 @@ then
     ## Packages
     zypper rm SuSEfirewall2
     zypper in psmisc mlocate make man man-pages gcc-c++ patch
-    zypper in dhcp-server iptables neovim logwatch squid
+    zypper in dhcp-server iptables neovim logwatch docker
 
     ## Stop wicked
     systemctl stop wicked
@@ -54,18 +54,16 @@ then
     systemctl start dhcpd.service
     systemctl enable dhcpd.service
 
+    ## Squid
+    docker-compose -f ./containers/squid/docker-compose.yml up -d
+
     # Enable firewall rules
     /root/bin/shitty_firewall
 
     ## Logwatch
     mkdir /var/cache/logwatch
     echo "MailTo = mwasa@dtu.dk, s215771@student.dtu.dk" >> /etc/logwatch/conf/logwatch.conf
-
     #logwatch --detail Low --range today
-
-    ## Squid
-    cp squid.conf /etc/squid/squid.conf
-    systemctl restart squid
 
     ## Tripwire
     tar -xvf tripwire-2.4.2.2-src.tar.bz2

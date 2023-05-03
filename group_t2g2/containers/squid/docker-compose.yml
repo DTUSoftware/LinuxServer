@@ -7,6 +7,9 @@ services:
         restart: unless-stopped
         volumes:
             - ./squid.conf:/etc/squid/squid.conf
+            - /var/log/squid:/var/log/squid
+        environment:
+            - TZ=UTC
         ports:
             - 3128:3128
         networks:
