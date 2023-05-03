@@ -9,8 +9,10 @@
 ip="/bin/ip"
 dev=eth0
 dev2=eth1
+dmz=dmz0
 myIP="192.168.150.14/25"
 my_intIP="192.168.154.1/24"
+my_dmzIP="10.22.0.0/16"
 # For XX and YYY refer to the note "Server IP Addresses"
 router="192.168.150.1"
 #
@@ -29,15 +31,21 @@ start)
   #
   $ip route add default dev $dev via $router scope global
   #
+  # 3. The DMZ interface
+  #
+  $ip link add name $dmz type dummy
+  $ip addr add $my_dmzIP dev $dmz
+  $ip link set up dev $dmz
+  #
   # Add a route to the 'internal' subnet
   #
-  $ip route add $my_int_net dev $dev2
+  # $ip route add $my_int_net dev $dev2
   #
-  # 3. Enable routing
+  # 4. Enable routing
   #
   echo 1 > /proc/sys/net/ipv4/ip_forward
   #
-  # 4. disable ICMP redirects
+  # 5. disable ICMP redirects
   #
   sysctl -w net.ipv4.conf.all.send_redirects=0
 
@@ -49,6 +57,9 @@ stop)
   $ip link set down dev $dev
   $ip addr del $my_intIP dev $dev2
   $ip link set down dev $dev2
+  $ip addr del $my_dmzIP dev $dmz
+  $ip link set down dev $dmz
+  $ip link delete $dmz
   ;;
 restart)
   # stop the network and start it again
