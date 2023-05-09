@@ -1,34 +1,40 @@
 # IPTABLES CONFIGRATION FOR MWASA_IND
 # LINUX SERVER AND NETWORK
 
+# Function to add rule to both iptables and ip6tables
+function iptablesBoth () {
+    iptables "$@"
+    ip6tables "$@"
+}
+
 # Clear the iptables
-iptables -F
-iptables -t nat -F
-iptables -X
+iptablesBoth -F
+iptablesBoth -t nat -F
+iptablesBoth -X
 
 # Block everything by default
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
+iptablesBoth -P INPUT DROP
+iptablesBoth -P FORWARD DROP
+iptablesBoth -P OUTPUT DROP
 
 # Deny pinging
-iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+iptablesBoth -A INPUT -p icmp --icmp-type echo-request -j DROP
 
 # Allow ssh
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+iptablesBoth -A INPUT -p tcp --dport 22 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 # Allow DNS
-iptables -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
-iptables -A INPUT -p udp -m udp --sport 53 -j ACCEPT
+iptablesBoth -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
+iptablesBoth -A INPUT -p udp -m udp --sport 53 -j ACCEPT
 
 # Allow webtraffic
-iptables -A INPUT -p tcp --sport 80 -j ACCEPT
-iptables -A INPUT -p tcp --sport 443 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+iptablesBoth -A INPUT -p tcp --sport 80 -j ACCEPT
+iptablesBoth -A INPUT -p tcp --sport 443 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp --dport 80 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp --dport 443 -j ACCEPT
 
 # Block everything else
-iptables -A INPUT -j DROP
-iptables -A OUTPUT -j DROP
-iptables -A FORWARD -j DROP
+iptablesBoth -A INPUT -j DROP
+iptablesBoth -A OUTPUT -j DROP
+iptablesBoth -A FORWARD -j DROP
