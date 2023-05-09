@@ -1,0 +1,1 @@
+lxc launch ubuntu:18.04 net1 --profile default --profile ipvlan

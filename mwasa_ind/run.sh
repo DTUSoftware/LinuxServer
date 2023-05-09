@@ -50,9 +50,12 @@ then
 
     ## Install packages
 
+    ### Install Snap (for LXD)
+    apt-get install snapd
+
     ### Docker - https://docs.docker.com/engine/install/ubuntu/
     #### Uninstall old versions
-    sudo apt-get remove docker docker-engine docker.io containerd runc
+    apt-get remove docker docker-engine docker.io containerd runc
     #### Install dependencies
     apt-get install ca-certificates curl gnupg
     #### Add the Docker repo's GPG key
@@ -64,7 +67,18 @@ then
     #### Update apt package index, again
     apt-get update
     #### Finally, install Docker
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    #### Add a macvlan network - https://docs.docker.com/network/macvlan/
+    docker network create -d macvlan --subnet=192.168.154.0/24 --gateway=192.168.154.1 -o parent=eth0 server14net
+
+    ### LXD - https://ubuntu.com/lxd and https://linuxcontainers.org/lxd/docs/master/
+    #### Install LXD
+    snap install lxd
+    #### Init LXD
+    lxd init --minimal
+    #### Add a ipvlan network - https://linuxcontainers.org/lxd/docs/master/reference/devices_nic/
+    lxc profile create ipvlan
+    lxc profile device add ipvlan eth0 nic nictype=ipvlan parent=eth0 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.0/24
 
     # Do dist upgrade :)
     do-release-upgrade
