@@ -66,6 +66,15 @@ then
             systemctl enable sshd
             systemctl restart sshd
 
+            # DNS
+            if grep -q "DNS=1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001" /etc/systemd/resolved.conf
+            then
+                echo "DNS already set!"
+            else
+                echo "Adding DNS!"
+                echo "DNS=1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001" >> /etc/systemd/resolved.conf
+            fi
+
             # Firewall Configuration
             echo "Configuring firewall..."
             sh ./firewall.sh

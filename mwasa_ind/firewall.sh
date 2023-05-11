@@ -18,6 +18,10 @@ iptablesBoth -P INPUT DROP
 iptablesBoth -P FORWARD DROP
 iptablesBoth -P OUTPUT DROP
 
+# Allow loopback traffic
+iptablesBoth -A INPUT -o lo -j ACCEPT
+iptablesBoth -A OUTPUT -o lo -j ACCEPT
+
 # Allow established connections
 iptablesBoth -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
@@ -30,10 +34,12 @@ iptablesBoth -A INPUT -p tcp --dport 22 -j ACCEPT
 iptablesBoth -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 # Allow DNS
-iptablesBoth -A OUTPUT -p udp --sport 53 -j ACCEPT
-iptablesBoth -A OUTPUT -p tcp --sport 53 -j ACCEPT
-iptablesBoth -A INPUT -p udp --dport 53 -j ACCEPT
-iptablesBoth -A OUTPUT -p tcp --sport 53 -j ACCEPT
+iptablesBoth -A INPUT -p udp --sport 53 -j ACCEPT
+iptablesBoth -A OUTPUT -p udp --dport 53 -j ACCEPT
+## TCP is not needed for DNS, but sometimes TCP can apparently make an
+## appearence on DNS requests so we allow it
+iptablesBoth -A OUTPUT -p tcp --dport 53 -j ACCEPT
+iptablesBoth -A INPUT -p tcp --sport 53 -j ACCEPT
 
 # Allow webtraffic
 iptablesBoth -A INPUT -p tcp -m multiport --sports 80,443 -j ACCEPT
