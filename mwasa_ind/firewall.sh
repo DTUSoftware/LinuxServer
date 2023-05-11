@@ -38,8 +38,10 @@ iptablesBoth -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
 iptablesBoth -A OUTPUT -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
 
 # Allow proxy traffic
-iptablesBoth -A INPUT -p tcp -d 192.168.154.1 --dport 3128 -j ACCEPT
-iptablesBoth -A OUTPUT -p tcp -s 192.168.154.1 --sport 3128 -j ACCEPT
+iptables -A INPUT -p tcp -d 192.168.154.1 --dport 3128 -j ACCEPT
+iptables -A OUTPUT -p tcp -s 192.168.154.1 --sport 3128 -j ACCEPT
+ip6tables -A INPUT -p tcp -d fe80::5054:ff:fe03:2300 --dport 3128 -j ACCEPT
+ip6tables -A OUTPUT -p tcp -s fe80::5054:ff:fe03:2300 --sport 3128 -j ACCEPT
 
 # Block everything else
 iptablesBoth -A INPUT -j DROP
