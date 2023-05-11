@@ -9,7 +9,7 @@ echo "[SSH Keys] Setting up SSH keys for the current user..."
 
 ## SSH keys
 mkdir ~/.ssh
-echo -e "$ssh_key_laptop\n$ssh_key_desktop" > ~/.ssh/authorized_keys
+printf "%s\n" "$ssh_key_laptop" "$ssh_key_desktop" > ~/.ssh/authorized_keys
 
 ## Permissions for directory
 chmod -v 700 ~
@@ -72,7 +72,13 @@ then
 
             # Enable proxy
             echo "Enabling proxy..."
-            echo -e "http_proxy=http://192.168.154.1:3128\nhttps_proxy=https://192.168.154.1:3128" >> /etc/environment
+            if grep -q "http_proxy=http://192.168.154.1:3128" /etc/environment
+            then
+                echo "Proxy already set!"
+            else
+                echo "Adding to envionment!"
+                printf "%s\n" "http_proxy=http://192.168.154.1:3128" "https_proxy=https://192.168.154.1:3128" >> /etc/environment
+            fi
 
             # Packages
             echo "[Packages] Updating and installing packages..."
