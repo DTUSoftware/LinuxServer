@@ -2,7 +2,7 @@
 # LINUX SERVER AND NETWORK
 
 # Function to add rule to both iptables and ip6tables
-function iptablesBoth () {
+function iptablesBoth() {
     iptables "$@"
     ip6tables "$@"
 }
