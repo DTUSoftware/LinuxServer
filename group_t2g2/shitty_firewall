@@ -22,6 +22,8 @@ $IPTABLES -P OUTPUT DROP
 # Allow DNS on the DMZ
 $IPTABLES -A FORWARD -i $DMZ_IF -p udp -m udp --sport 53 -j ACCEPT
 $IPTABLES -A FORWARD -o $DMZ_IF -p udp -m udp --dport 53 -j ACCEPT
+$IPTABLES -A INPUT -i $DMZ_IF -p udp --dport 53 -d $NETWORK -j ACCEPT
+$IPTABLES -A OUTPUT -o $DMZ_IF -p udp --sport 53 -s $NETWORK -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # Add LOG_REJECT chain
 $IPTABLES -N LOG_REJECT
