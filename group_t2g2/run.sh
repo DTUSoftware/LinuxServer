@@ -77,12 +77,49 @@ then
     # Enable firewall rules
     /root/bin/shitty_firewall
 
-    # Logwatch
+    # Shared folder for logs with a file for each group member
+    ## Create shared group
+    groupadd server_admins
+    ## Create the users
+    groupadd mwasa
+    useradd -m --gid mwasa --groups server_admins mwasa
+    groupadd s215771
+    useradd -m --gid s215771 --groups server_admins s215771
+    ## Add SSH-keys to the users, so they can log in
+    mkdir /home/mwasa/.ssh
+    echo $ssh_key_mwasa > /home/mwasa/.ssh/authorized_keys
+    mkdir /home/s215771/.ssh
+    echo $ssh_key_s215771 > /home/s215771/.ssh/authorized_keys
+    ### Change permissions for the users' ssh directories
+    chown -v -R mwasa /home/mwasa/.ssh
+    chmod -v 700 /home/mwasa/.ssh
+    chmod -v 600 /home/mwasa/.ssh/authorized_keys
+    chown -v -R s215771 /home/s215771/.ssh
+    chmod -v 700 /home/s215771/.ssh
+    chmod -v 600 /home/s215771/.ssh/authorized_keys
+    ## Create shared common directory for logging
+    mkdir /var/log/adminlog
+    chgrp -v -R server_admins /var/log/adminlog
+    ### Remember setgid bit (2) to give group ownership to all new files
+    chmod -v -R 2770 /var/log/adminlog
+    ## Create files for logging
+    touch /var/log/adminlog/mwasa.log
+    touch /var/log/adminlog/s215771.log
+    ## Change permissions for files to allow read by group and write by owner
+    chown -v mwasa /var/log/adminlog/mwasa.log
+    chown -v s215771 /var/log/adminlog/s215771.log
+    ### 740 = owner everything, group read, everyone else nothing
+    chmod -v 740 /var/log/adminlog/mwasa.log
+    chmod -v 740 /var/log/adminlog/s215771.log
+
+    # Monitoring and logging
+
+    ## Logwatch
     mkdir /var/cache/logwatch
     echo "MailTo = mwasa@dtu.dk, s215771@student.dtu.dk" >> /etc/logwatch/conf/logwatch.conf
 #    logwatch --detail Low --range today
 
-    # Tripwire
+    ## Tripwire
     tar -xvf tripwire-2.4.2.2-src.tar.bz2
     mv tripwire-2.4.2.2-gcc-4.7.patch tripwire-2.4.2.2/
     cd tripwire-2.4.2.2/
