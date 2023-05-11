@@ -1,17 +1,5 @@
 #!/bin/bash
 
-echo "Please confirm setting up server..."
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes )
-            echo "Confirmed! Setting up server!"
-            break;
-        No )
-            echo "Denied, exiting!"
-            exit 0
-    esac
-done
-
 # SSH keys
 ssh_key_laptop="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnC2fVeR8eoJ7U6pWyweIuWLSr5+moVWXk6Y93ALvvj nagisa@cutefemboy.com"
 ssh_key_desktop="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFB/OxGoBrNAtxcGI6XFrGWMr+8Wv53x2oTx6EzDBh7 hero@cutefemboy.com"
@@ -140,27 +128,26 @@ then
 else
     # Set up git and pull the repo
 
+    echo "Checking for and installing git..."
+    sudo apt-get install git
+
     ## Deploy keys
     echo "Checking for deploy key configuration..."
-    if [ ! grep -q "Host github.com-serverconfig" ~/.ssh/config ]
+    if [ -f ~/.ssh/config ] && grep -q "Host github.com-serverconfig" ~/.ssh/config
     then
+        echo "Configuration found, proceeeding!"
+    else
         echo "Configuration not found, creating new..."
-
-        read -p "Paste your deploy key's public key: " deploy_public
-        ### paste logic from https://stackoverflow.com/a/20913871
-        echo "Paste your deploy key's private key (press Enter when pasted): "
-        deploy_private=$(sed '/^$/q')
-        ### Write keys to files
-        echo "$deploy_public" > ~/.ssh/id_rsa_deploy.pub
-        echo "$deploy_private" > ~/.ssh/id_rsa_deploy
-        chmod -v 600 ~/.ssh/id_rsa_deploy.pub
-        chmod -v 600 ~/.ssh/id_rsa_deploy
+        
+        ## Generate key
+        ssh-keygen -f ~/.ssh/id_rsa_deploy -t ed25519 -N '' -q
+        echo "Please add the following SSH key to the deployment section on the repo: "
+        cat ~/.ssh/id_rsa_deploy.pub
+        read -p "Press Enter to continue" void
 
         ## Add deploy to SSH config
-        echo -e "Host github.com-serverconfig\n  Hostname github.com\n  IdentityFile=~/.ssh/id_rsa_deploy" >> ~/.ssh/config
+        printf "%s\n" "Host github.com-serverconfig" "  Hostname github.com" "  IdentityFile=~/.ssh/id_rsa_deploy" >> ~/.ssh/config
         chmod -v 600 ~/.ssh/config
-    else
-        echo "Configuration found, proceeeding!"
     fi
     
     ## Clone repo
