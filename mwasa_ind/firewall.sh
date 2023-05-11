@@ -30,8 +30,10 @@ iptablesBoth -A INPUT -p tcp --dport 22 -j ACCEPT
 iptablesBoth -A OUTPUT -p tcp --sport 22 -j ACCEPT
 
 # Allow DNS
-iptablesBoth -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
-iptablesBoth -A INPUT -p udp -m udp --sport 53 -j ACCEPT
+iptablesBoth -A OUTPUT -p udp --sport 53 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp --sport 53 -j ACCEPT
+iptablesBoth -A INPUT -p udp --dport 53 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp --sport 53 -j ACCEPT
 
 # Allow webtraffic
 iptablesBoth -A INPUT -p tcp -m multiport --sports 80,443 -j ACCEPT
