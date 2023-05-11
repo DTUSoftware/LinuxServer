@@ -42,7 +42,7 @@ then
         echo "Hashes match, running configration..."
         # Check for sudo
         echo "Checking for sudo..."
-        if [ "$EUID" -eq 0 ]
+        if "$EUID" == 0
         then
             echo "Running as root, continuing..."
 
@@ -157,7 +157,9 @@ else
 
     # Run that file instead
     echo "Running newly downloaded file..."
-    cd ./LinuxServer/mwasa_ind
+    cd ./LinuxServer
+    git config --global --add safe.directory $PWD
+    cd ./mwasa_ind
     sh ./run.sh
     exit 0
 fi
