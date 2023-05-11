@@ -74,6 +74,9 @@ then
 #    docker-compose -f ./containers/squid/docker-compose.yml up -d
     sh ./containers/squid/run.sh
 
+    # DNS server (custom Docker service for DMZ)
+    sh ./containers/coredns/run.sh
+
     # Enable firewall rules
     /root/bin/shitty_firewall
 

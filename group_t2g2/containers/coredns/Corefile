@@ -1,0 +1,11 @@
+.:53 {
+    forward . 1.1.1.1 8.8.8.8
+    log
+    errors
+}
+
+t2g2.dtu.dk:53 {
+    file /coredns/t2g2.dtu.dk.db
+    log
+    errors
+}
