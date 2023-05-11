@@ -18,8 +18,12 @@ iptablesBoth -P INPUT DROP
 iptablesBoth -P FORWARD DROP
 iptablesBoth -P OUTPUT DROP
 
+# Allow established connections
+iptablesBoth -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
 # Deny pinging
-iptablesBoth -A INPUT -p icmp --icmp-type echo-request -j DROP
+iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+ip6tables -A INPUT -p icmpv6 --icmpv6-type echo-request -j DROP
 
 # Allow ssh
 iptablesBoth -A INPUT -p tcp --dport 22 -j ACCEPT
@@ -30,10 +34,12 @@ iptablesBoth -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 iptablesBoth -A INPUT -p udp -m udp --sport 53 -j ACCEPT
 
 # Allow webtraffic
-iptablesBoth -A INPUT -p tcp --sport 80 -j ACCEPT
-iptablesBoth -A INPUT -p tcp --sport 443 -j ACCEPT
-iptablesBoth -A OUTPUT -p tcp --dport 80 -j ACCEPT
-iptablesBoth -A OUTPUT -p tcp --dport 443 -j ACCEPT
+iptablesBoth -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
+
+# Allow proxy traffic
+iptablesBoth -A INPUT -p tcp -d 192.168.154.1 --dport 3128 -j ACCEPT
+iptablesBoth -A OUTPUT -p tcp -s 192.168.154.1 --sport 3128 -j ACCEPT
 
 # Block everything else
 iptablesBoth -A INPUT -j DROP

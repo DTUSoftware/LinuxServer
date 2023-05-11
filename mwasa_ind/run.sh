@@ -50,7 +50,14 @@ then
             echo "Setting hostname..."
             hostname mwasa-t2g2
             hostnamectl set-hostname mwasa-t2g2
-            echo "mwasa-t2g2" >> /etc/hostname
+            echo "mwasa-t2g2" > /etc/hostname
+            if grep -q "mwasa-t2g2" /etc/hosts
+            then
+                echo "Hostname already in hosts..."
+            else
+                echo "Hostname not in hosts, adding..."
+                echo "172.0.1.1 mwasa-t2g2" > /etc/hosts
+            fi
             
             # SSH
             echo "Starting SSH server..."
