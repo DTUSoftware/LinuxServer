@@ -42,7 +42,7 @@ then
         echo "Hashes match, running configration..."
         # Check for sudo
         echo "Checking for sudo..."
-        if [ "$(id -u)" == "0" ]
+        if [ "$(id -u)" -eq "0" ]
         then
             echo "Running as root, continuing..."
 
