@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # SSH key
-ssh_key="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnC2fVeR8eoJ7U6pWyweIuWLSr5+moVWXk6Y93ALvvj nagisa@cutefemboy.com"
+ssh_key_laptop="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnC2fVeR8eoJ7U6pWyweIuWLSr5+moVWXk6Y93ALvvj nagisa@cutefemboy.com"
+ssh_key_desktop="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFB/OxGoBrNAtxcGI6XFrGWMr+8Wv53x2oTx6EzDBh7 hero@cutefemboy.com"
 
 # SSH keys, user
 mkdir ~/.ssh
-echo $ssh_key > ~/.ssh/authorized_keys
+echo -e "$ssh_key_laptop\n$ssh_key_desktop" > ~/.ssh/authorized_keys
 
 # Permissions for user directory
 chmod -v 700 ~
@@ -17,7 +18,7 @@ if [ "$EUID" -eq 0 ]
 then
     # SSH keys, root
     mkdir ~/.ssh
-    echo $ssh_key > ~/.ssh/authorized_keys
+    echo -e "$ssh_key_laptop\n$ssh_key_desktop" > ~/.ssh/authorized_keys
 
     # Permissions for root directory
     chmod -v 700 ~
