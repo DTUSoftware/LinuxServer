@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  nuclear-api:
+    build: .
+    restart: always
+    stop_signal: SIGINT
+    ports:
+      - 80:5000
+    networks:
+      - server14net
