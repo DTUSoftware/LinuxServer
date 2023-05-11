@@ -19,7 +19,7 @@ iptablesBoth -P FORWARD DROP
 iptablesBoth -P OUTPUT DROP
 
 # Allow loopback traffic
-iptablesBoth -A INPUT -o lo -j ACCEPT
+iptablesBoth -A INPUT -i lo -j ACCEPT
 iptablesBoth -A OUTPUT -o lo -j ACCEPT
 
 # Allow established connections
