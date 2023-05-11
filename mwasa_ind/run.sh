@@ -157,6 +157,7 @@ else
 
     # Run that file instead
     echo "Running newly downloaded file..."
-    sh ./LinuxServer/mwasa_ind/run.sh
+    cd ./LinuxServer/mwasa_ind
+    sh ./run.sh
     exit 0
 fi
