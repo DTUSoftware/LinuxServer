@@ -32,7 +32,7 @@ then
     # Packages
     zypper rm SuSEfirewall2
     zypper in psmisc mlocate make man man-pages gcc-c++ patch
-    zypper in dhcp-server iptables neovim logwatch docker
+    zypper in dhcp-server iptables postfix neovim logwatch docker
 
     # Stop wicked
     systemctl stop wicked
