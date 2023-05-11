@@ -123,6 +123,7 @@ then
         else
             echo "The script now needs to run with elevated permissions to continue, please elevate..."
             sudo sh ./run.sh
+            exit 0
         fi
     fi
 else
