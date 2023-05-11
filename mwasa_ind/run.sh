@@ -20,7 +20,7 @@ echo "[SSH Keys] Done!"
 
 # Check for git folder
 echo "[Git] Checking for git..."
-if [ -d ".git" ]
+if [ -d "../.git" ]
 then
     echo "[Git] Git repository found. Checking for updates..."
     # Check if updated
