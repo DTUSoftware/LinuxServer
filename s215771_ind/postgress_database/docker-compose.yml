@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: mememe
+      POSTGRES_PASSWORD: myHorriblePassword
+      POSTGRES_DB: testdatabase
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  db-data:
