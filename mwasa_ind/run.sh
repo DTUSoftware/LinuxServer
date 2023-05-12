@@ -107,15 +107,21 @@ then
             #### Install dependencies
             apt-get install ca-certificates curl gnupg -y
             #### Add the Docker repo's GPG key
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-            chmod a+r /etc/apt/keyrings/docker.gpg
+            if [ -f "/etc/apt/keyrings/docker.gpg" ]
+            then
+                echo "Docker GPG already installed, skipping..."
+            else
+                echo "Installing Docker's GPG key..."
+                install -m 0755 -d /etc/apt/keyrings
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+                chmod a+r /etc/apt/keyrings/docker.gpg
+            fi
             #### Add the repository
             echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
             #### Update apt package index, again
             apt-get update -y
             #### Finally, install Docker
-            apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+            apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose -y
             #### Add a macvlan network - https://docs.docker.com/network/macvlan/
             echo "Creating macvlan network for Docker..."
             docker network create -d macvlan --subnet=192.168.154.0/24 --gateway=192.168.154.1 -o parent=ens3 server14net
