@@ -35,6 +35,7 @@ then
     then
         ## If hashes don't match, pull and try again
         echo "Hashes doesn't match, pulling and trying again!"
+        git reset --hard
         git pull
         sh ./run.sh
         exit 0
