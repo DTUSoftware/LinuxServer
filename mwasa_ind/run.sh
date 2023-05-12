@@ -79,8 +79,6 @@ then
             ## Enable all interfaces
             ifconfig ens3 up
             ifconfig ens4 up
-            ifconfig ens5 up
-            ifconfig ens6 up
 
             ## Change netplan to enable DHCP on all interfaces
             cp ./01-netcfg.yaml /etc/netplan/01-netcfg.yaml
@@ -145,7 +143,7 @@ then
             #### Add a ipvlan network - https://linuxcontainers.org/lxd/docs/master/reference/devices_nic/
             echo "Creating ipvlan for LXD..."
             lxc profile create ipvlan
-            lxc profile device add ipvlan ens3 nic nictype=ipvlan parent=ens3 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.0/24
+            lxc profile device add ipvlan ens4 nic nictype=ipvlan parent=ens4 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
 
             # Services
             echo "[Services] Starting services..."
