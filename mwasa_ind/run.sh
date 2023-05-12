@@ -165,7 +165,10 @@ then
             docker-compose -f ./services/api/docker-compose.yml up -d
             ## Nginx
             echo "[Services] Starting the NGINX Server..."
-            sh ./services/nginx/lxd_nginx.sh
+            current_dir="$PWD"
+            cd ./services/nginx
+            sh ./lxd_nginx.sh
+            cd "$PWD"
         else
             echo "The script now needs to run with elevated permissions to continue, please elevate..."
             sudo sh ./run.sh
