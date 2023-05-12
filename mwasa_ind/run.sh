@@ -35,6 +35,7 @@ then
     then
         ## If hashes don't match, pull and try again
         echo "Hashes doesn't match, pulling and trying again!"
+        git reset --hard
         git pull
         sh ./run.sh
         exit 0
@@ -141,9 +142,11 @@ then
             #### Init LXD
             lxd init --minimal
             #### Add a ipvlan network - https://linuxcontainers.org/lxd/docs/master/reference/devices_nic/
-            echo "Creating ipvlan for LXD..."
-            lxc profile create ipvlan
-            lxc profile device add ipvlan ens3 nic nictype=ipvlan parent=ens3 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
+            #echo "Creating ipvlan for LXD..."
+            #lxc profile create ipvlan
+            #lxc profile device add ipvlan ens3 nic nictype=ipvlan parent=ens3 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
+            #### Add a macvlan network
+            lxc network create macvlan --type=macvlan parent=ens4
 
             # Restart Docker for firewall config
             echo "Restarting Docker..."
@@ -162,7 +165,10 @@ then
             docker-compose -f ./services/api/docker-compose.yml up -d
             ## Nginx
             echo "[Services] Starting the NGINX Server..."
-            sh ./services/nginx/lxd_nginx.sh
+            current_dir="$PWD"
+            cd ./services/nginx
+            sh ./lxd_nginx.sh
+            cd "$PWD"
         else
             echo "The script now needs to run with elevated permissions to continue, please elevate..."
             sudo sh ./run.sh
