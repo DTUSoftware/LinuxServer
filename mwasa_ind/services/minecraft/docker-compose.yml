@@ -10,8 +10,8 @@ services:
     volumes:
       - data:/minecraft
     networks:
-      - server14net:
-          ipv4_address: 192.168.154.2
+      server14net:
+        ipv4_address: 192.168.154.2
 
 volumes:
   data:

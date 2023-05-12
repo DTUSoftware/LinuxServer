@@ -7,8 +7,8 @@ services:
     ports:
       - 80:5000
     networks:
-      - server14net:
-          ipv4_address: 192.168.154.2
+      server14net:
+        ipv4_address: 192.168.154.2
 networks:
   server14net:
     name: server14net
