@@ -13,3 +13,6 @@ services:
       - server14net
 volumes:
   data:
+networks:
+  server14net:
+    external: true
