@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  nuclear-api:
+    build: .
+    restart: always
+    stop_signal: SIGINT
+    ports:
+      - 80:5000
+    networks:
+      server14net:
+        ipv4_address: 192.168.154.3
+networks:
+  server14net:
+    name: server14net
+    driver: macvlan
+    driver_opts:
+      parent: ens3
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.154.0/28
+          gateway: 192.168.154.1

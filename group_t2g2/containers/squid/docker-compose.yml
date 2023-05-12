@@ -3,7 +3,7 @@ services:
     squid:
         container_name: squid
         hostname: squid
-        image: ubuntu/squid
+        build: .
         restart: unless-stopped
         volumes:
             - ./squid.conf:/etc/squid/squid.conf

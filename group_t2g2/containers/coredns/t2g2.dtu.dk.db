@@ -1,0 +1,6 @@
+server14.t2g2.dtu.dk.   IN  A       192.168.150.14
+mwasa.t2g2.dtu.dk.      IN  A       192.168.154.106
+s215771.t2g2.dtu.dk.    IN  A       192.168.154.105
+server.t2g2.dtu.dk.     IN  CNAME   server14.example.com
+gateway.t2g2.dtu.dk.    IN  CNAME   server14.example.com
+dns.t2g2.dtu.dk.        IN  CNAME   server14.example.com

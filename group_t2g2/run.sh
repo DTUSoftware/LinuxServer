@@ -32,7 +32,7 @@ then
     # Packages
     zypper rm SuSEfirewall2
     zypper in psmisc mlocate make man man-pages gcc-c++ patch
-    zypper in dhcp-server iptables neovim logwatch docker
+    zypper in dhcp-server iptables postfix neovim logwatch docker
 
     # Stop wicked
     systemctl stop wicked
@@ -73,6 +73,9 @@ then
     # Squid
 #    docker-compose -f ./containers/squid/docker-compose.yml up -d
     sh ./containers/squid/run.sh
+
+    # DNS server (custom Docker service for DMZ)
+    sh ./containers/coredns/run.sh
 
     # Enable firewall rules
     /root/bin/shitty_firewall

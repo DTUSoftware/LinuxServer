@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  minecraft-server:
+    build: .
+    restart: always
+    environment:
+      - MINECRAFT_MEMORY=2G
+    ports:
+      - 25565:25565
+    volumes:
+      - data:/minecraft
+    networks:
+      server14net:
+        ipv4_address: 192.168.154.2
+
+volumes:
+  data:
+networks:
+  server14net:
+    name: server14net
+    driver: macvlan
+    driver_opts:
+      parent: ens3
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.154.0/28
+          gateway: 192.168.154.1
