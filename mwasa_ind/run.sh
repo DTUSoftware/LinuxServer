@@ -146,7 +146,10 @@ then
             lxc profile device add ipvlan ens4 nic nictype=ipvlan parent=ens4 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
 
             # Restart Docker for firewall config
+            echo "Restarting Docker..."
             service docker restart
+            echo "Restarting LXD..."
+            snap restart lxd
 
             # Services
             echo "[Services] Starting services..."
