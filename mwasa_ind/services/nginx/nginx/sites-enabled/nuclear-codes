@@ -12,6 +12,8 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://192.168.154.3/api/;
+        rewrite ^(.*)$ "://192.168.154.3$1";
+        rewrite ^(.*)$ "http$1" break;
+        proxy_pass http://192.168.154.1:3128;
     }
 }
