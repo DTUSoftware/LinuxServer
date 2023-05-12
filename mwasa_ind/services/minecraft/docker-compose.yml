@@ -16,11 +16,11 @@ services:
 volumes:
   data:
 networks:
-  server14net:
-    name: server14net
+  server14net1:
+    name: server14net1
     driver: macvlan
     driver_opts:
-      parent: ens3
+      parent: ens4
     ipam:
       driver: default
       config:

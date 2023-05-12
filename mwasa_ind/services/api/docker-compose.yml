@@ -7,14 +7,14 @@ services:
     ports:
       - 80:5000
     networks:
-      server14net:
+      server14net1:
         ipv4_address: 192.168.154.3
 networks:
-  server14net:
-    name: server14net
+  server14net2:
+    name: server14net2
     driver: macvlan
     driver_opts:
-      parent: ens3
+      parent: ens5
     ipam:
       driver: default
       config:
