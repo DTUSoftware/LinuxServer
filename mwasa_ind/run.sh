@@ -75,6 +75,17 @@ then
                 echo "DNS=1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001" >> /etc/systemd/resolved.conf
             fi
 
+            # Network interfaces
+            ## Enable all interfaces
+            ifconfig ens3 up
+            ifconfig ens4 up
+            ifconfig ens5 up
+            ifconfig ens6 up
+
+            ## Change netplan to enable DHCP on all interfaces
+            cp ./01-netcfg.yaml /etc/netplan/01-netcfg.yaml
+            sudo netplan apply
+
             # Firewall Configuration
             echo "Configuring firewall..."
             sh ./firewall.sh
