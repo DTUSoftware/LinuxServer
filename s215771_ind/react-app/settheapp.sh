@@ -5,5 +5,5 @@ sudo apt install docker
 sudo usermod -aG docker maizi
 # Build the docker container
 docker build -t countryapp .
-# Runs the docker container and binds the port
-docker run -p 3000:3000 countryapp & 
+# Runs the docker container and binds the ports, and the -d option to detach the container
+docker run -d -p 3000:3000 countryapp
