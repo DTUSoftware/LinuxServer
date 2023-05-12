@@ -20,7 +20,7 @@ networks:
     name: server14net
     driver: macvlan
     driver_opts:
-      parent: ens4
+      parent: ens3
     ipam:
       driver: default
       config:
