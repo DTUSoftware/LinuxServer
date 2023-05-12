@@ -7,4 +7,4 @@
 docker build --tag "squid" .
 docker stop squid
 docker rm squid
-docker run -d --name squid -p 3128:3128 -v /var/log/squid:/var/log/squid --restart always "squid"
+docker run -d --name squid -p 3128:3128 -v /var/log/squid:/var/log/squid -v squidspool:/var/spool/squid --restart always "squid"

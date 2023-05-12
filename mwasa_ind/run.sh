@@ -86,7 +86,7 @@ then
                 echo "Proxy already set!"
             else
                 echo "Adding to envionment!"
-                printf "%s\n" "http_proxy=http://192.168.154.1:3128" "https_proxy=https://192.168.154.1:3128" >> /etc/environment
+                printf "%s\n" "http_proxy=http://192.168.154.1:3128" "https_proxy=http://192.168.154.1:3128" >> /etc/environment
             fi
 
             # Packages
