@@ -62,9 +62,9 @@ then
             # SSH
             echo "Starting SSH server..."
             cp sshd_config /etc/ssh/sshd_config
-            systemctl start sshd
-            systemctl enable sshd
-            systemctl restart sshd
+            systemctl start ssh
+            systemctl enable ssh
+            systemctl restart ssh
 
             # DNS
             if grep -q "DNS=1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001" /etc/systemd/resolved.conf
@@ -118,17 +118,17 @@ then
             apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
             #### Add a macvlan network - https://docs.docker.com/network/macvlan/
             echo "Creating macvlan network for Docker..."
-            docker network create -d macvlan --subnet=192.168.154.0/24 --gateway=192.168.154.1 -o parent=eth0 server14net
+            docker network create -d macvlan --subnet=192.168.154.0/24 --gateway=192.168.154.1 -o parent=ens3 server14net
 
             ### LXD - https://ubuntu.com/lxd and https://linuxcontainers.org/lxd/docs/master/
             #### Install LXD
-            snap install lxd -y
+            snap install lxd
             #### Init LXD
             lxd init --minimal
             #### Add a ipvlan network - https://linuxcontainers.org/lxd/docs/master/reference/devices_nic/
             echo "Creating ipvlan for LXD..."
             lxc profile create ipvlan
-            lxc profile device add ipvlan eth0 nic nictype=ipvlan parent=eth0 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.0/24
+            lxc profile device add ipvlan ens3 nic nictype=ipvlan parent=ens3 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.0/24
 
             # Services
             echo "[Services] Starting services..."
