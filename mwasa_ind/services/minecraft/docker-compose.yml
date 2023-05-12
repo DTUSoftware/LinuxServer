@@ -10,19 +10,21 @@ services:
     volumes:
       - data:/minecraft
     networks:
-      server14net:
-        ipv4_address: 192.168.154.2
+      - server14net
+#      server14net:
+#        ipv4_address: 192.168.154.2
 
 volumes:
   data:
 networks:
   server14net:
     name: server14net
-    driver: macvlan
-    driver_opts:
-      parent: ens3
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.154.0/24
-          gateway: 192.168.154.1
+    driver: host
+#    driver: macvlan
+#    driver_opts:
+#      parent: ens3
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 192.168.154.0/24
+#          gateway: 192.168.154.1
