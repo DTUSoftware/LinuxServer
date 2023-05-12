@@ -12,6 +12,6 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://192.168.154.3:80;
+        proxy_pass http://192.168.154.3/api/;
     }
 }
