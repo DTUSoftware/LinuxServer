@@ -133,7 +133,7 @@ then
             apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose -y
             #### Add a macvlan network - https://docs.docker.com/network/macvlan/
             #echo "Creating macvlan network for Docker..."
-            #docker network create -d macvlan --subnet=192.168.154.0/24 --gateway=192.168.154.1 -o parent=ens3 server14net
+            # docker network create -d macvlan --subnet=192.168.154.0/28 --gateway=192.168.154.1 -o parent=ens4 server14net
 
             ### LXD - https://ubuntu.com/lxd and https://linuxcontainers.org/lxd/docs/master/
             #### Install LXD

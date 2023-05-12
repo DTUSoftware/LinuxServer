@@ -1,6 +1,9 @@
 # IPTABLES CONFIGRATION FOR MWASA_IND
 # LINUX SERVER AND NETWORK
 
+# Enable forwarding
+sysctl net.ipv4.conf.all.forwarding=1
+
 # Function to add rule to both iptables and ip6tables
 iptablesBoth()
 {
