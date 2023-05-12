@@ -143,7 +143,7 @@ then
             #### Add a ipvlan network - https://linuxcontainers.org/lxd/docs/master/reference/devices_nic/
             echo "Creating ipvlan for LXD..."
             lxc profile create ipvlan
-            lxc profile device add ipvlan ens4 nic nictype=ipvlan parent=ens4 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
+            lxc profile device add ipvlan ens3 nic nictype=ipvlan parent=ens3 mode=l2 ipv4.gateway=192.168.154.1 ipv4.address=192.168.154.17/28
 
             # Restart Docker for firewall config
             echo "Restarting Docker..."
