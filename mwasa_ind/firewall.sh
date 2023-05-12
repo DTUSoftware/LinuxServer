@@ -30,8 +30,11 @@ iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
 ip6tables -A INPUT -p icmpv6 --icmpv6-type echo-request -j DROP
 
 # Allow ssh
+## Incoming SSH connections
 iptablesBoth -A INPUT -p tcp --dport 22 -j ACCEPT
 iptablesBoth -A OUTPUT -p tcp --sport 22 -j ACCEPT
+## Outgoing SSH connection (ie. GitHub, etc.)
+iptablesBoth -A OUTPUT -p tcp --dport 22 -j ACCEPT
 
 # Allow DNS
 iptablesBoth -A INPUT -p udp --sport 53 -j ACCEPT
