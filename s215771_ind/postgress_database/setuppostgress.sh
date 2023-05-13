@@ -4,4 +4,4 @@ docker-compose up -d
 sudo apt install postgresql-client-common
 sudo apt-get install postgresql-client
 # 
-psql -h localhost -U mememe -d mydatabasetestdatabase
+psql -h localhost -U mememe -d testdatabase
